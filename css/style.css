@@ -1,10 +1,6 @@
 /* ==========================================================================
    A1 ELECTRICAL & SECURITY - Master Stylesheet
-   Mobile-First Architecture & WCAG AA Certified Polish
-   Typography: Poppins (Headings: 600, 700, 800) + Inter (Body: 400, 500, 600)
-   Brand Colors:
-     Navy: #071A2B, Electric Blue: #0B5FA5, Bright Blue: #168BCE
-     Amber: #F5A623 (CTA Buttons, Accents), Light BG: #F5F7FA
+   Strict GPU-Only Animations, @media (hover: hover) & Mobile-First Performance
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -72,13 +68,16 @@
   --font-mono: 'JetBrains Mono', monospace;
 
   /* Spacing Grid (Mobile Default) */
-  --section-pad: 56px 16px;
   --container-max: 1200px;
   --radius-card: 16px;
   --radius-btn: 10px;
   --radius-pill: 9999px;
 
-  --transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Gold Standard Animation Timing & Easing */
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 0.2s;
+  --duration-normal: 0.35s;
+  --duration-slow: 0.5s;
 }
 
 /* --------------------------------------------------------------------------
@@ -114,7 +113,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   GLOBAL RESET & ACCESSIBILITY (Zero Horizontal Overflow by Design)
+   GLOBAL RESET & ACCESSIBILITY
    -------------------------------------------------------------------------- */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -127,6 +126,7 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 5.5rem;
   -webkit-text-size-adjust: 100%;
+  overflow-x: clip; /* Safest overflow guard */
 }
 
 body {
@@ -136,9 +136,15 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   padding-bottom: 5.5rem; /* Prevents floating sticky buttons from covering content */
-  transition: background-color var(--transition), color var(--transition);
+  overflow-x: clip;
+  transition: background-color var(--duration-fast) var(--ease-smooth), color var(--duration-fast) var(--ease-smooth);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body.scroll-locked {
+  overflow: hidden !important;
+  touch-action: none;
 }
 
 @media (min-width: 768px) {
@@ -182,10 +188,9 @@ p {
 a {
   color: var(--link-accent);
   text-decoration: none;
-  transition: color var(--transition);
+  transition: color var(--duration-fast) var(--ease-smooth);
 }
 
-/* Media element safety: never cause horizontal overflow */
 img, video, iframe, svg {
   display: block;
   max-width: 100%;
@@ -201,6 +206,7 @@ button {
   background: none;
   border: none;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 :focus-visible {
@@ -230,6 +236,7 @@ button {
 .section {
   padding: 56px 16px;
   position: relative;
+  overflow: clip;
 }
 
 @media (min-width: 1024px) {
@@ -242,7 +249,6 @@ button {
   background-color: var(--section-alt-bg);
 }
 
-/* Section Header */
 .section-header {
   text-align: center;
   max-width: 760px;
@@ -288,7 +294,7 @@ button {
 }
 
 /* --------------------------------------------------------------------------
-   BUTTON SYSTEM (MOBILE-FIRST FULL WIDTH SUPPORT)
+   BUTTON SYSTEM (GPU-ONLY MICRO-INTERACTIONS & SHINE SWEEP)
    -------------------------------------------------------------------------- */
 .btn {
   display: inline-flex;
@@ -301,15 +307,35 @@ button {
   padding: 0.85rem 1.65rem;
   border-radius: var(--radius-btn);
   letter-spacing: 0.01em;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
   user-select: none;
   cursor: pointer;
   text-align: center;
-  min-height: 44px; /* Accessible minimum touch target */
+  min-height: 44px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.18s var(--ease-smooth), opacity 0.18s var(--ease-smooth);
+  -webkit-tap-highlight-color: transparent;
 }
 
+/* Touch Device Active Feedback: Instant scale(0.97), 0.1s */
 .btn:active {
-  transform: translateY(1px) scale(0.98);
+  transform: scale(0.97);
+  transition-duration: 0.1s;
+}
+
+/* Button Soft Glow Pseudo-elements (Pre-rendered for GPU performance) */
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: inherit;
+  border-radius: inherit;
+  opacity: 0;
+  z-index: -1;
+  transition: opacity var(--duration-normal) var(--ease-smooth);
 }
 
 .btn-primary {
@@ -317,13 +343,29 @@ button {
   color: var(--btn-primary-text) !important;
   font-weight: 700;
   border: 1px solid #d98f19;
-  box-shadow: var(--shadow-amber);
 }
 
-.btn-primary:hover {
-  background-color: var(--btn-primary-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(245, 166, 35, 0.45);
+/* Shine Sweep pseudo-element on Primary Amber Button */
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.45) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: translateX(-150%) skewX(-20deg);
+  pointer-events: none;
+  transition: transform 0.6s var(--ease-smooth);
+}
+
+.btn-primary i {
+  transition: transform 0.25s var(--ease-smooth);
 }
 
 .btn-secondary {
@@ -332,21 +374,10 @@ button {
   border: 1px solid #084c85;
 }
 
-.btn-secondary:hover {
-  background-color: var(--btn-secondary-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(11, 95, 165, 0.35);
-}
-
 .btn-outline {
   background-color: transparent;
   color: var(--btn-outline-text) !important;
   border: 2px solid var(--btn-outline-border);
-}
-
-.btn-outline:hover {
-  background-color: var(--btn-outline-hover-bg);
-  transform: translateY(-2px);
 }
 
 .btn-whatsapp {
@@ -354,13 +385,6 @@ button {
   color: var(--btn-whatsapp-text) !important;
   font-weight: 700;
   border: 1px solid #1eb857;
-  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
-}
-
-.btn-whatsapp:hover {
-  background-color: var(--btn-whatsapp-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
 }
 
 .btn-sm {
@@ -389,7 +413,111 @@ button {
 }
 
 /* --------------------------------------------------------------------------
-   STICKY NAVBAR & MOBILE DRAWER (44px TAP TARGETS)
+   DESKTOP ONLY HOVER EFFECTS (@media (hover: hover) and (pointer: fine))
+   Zero Sticky Hover On Touchscreens!
+   -------------------------------------------------------------------------- */
+@media (hover: hover) and (pointer: fine) {
+  /* Buttons */
+  .btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn-primary:hover::after {
+    transform: translateX(250%) skewX(-20deg);
+  }
+
+  .btn-primary:hover i {
+    transform: translateX(4px);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--btn-secondary-hover);
+  }
+
+  .btn-whatsapp:hover {
+    background-color: var(--btn-whatsapp-hover);
+    transform: translateY(-2px);
+  }
+
+  .btn-outline:hover {
+    background-color: var(--btn-outline-hover-bg);
+  }
+
+  /* Service Cards */
+  .service-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--border-focus);
+  }
+
+  .service-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .service-card:hover .service-icon-wrap {
+    transform: scale(1.08);
+    background-color: rgba(11, 95, 165, 0.25);
+    color: var(--color-amber);
+  }
+
+  /* Project Cards */
+  .project-card:hover {
+    transform: translateY(-6px);
+  }
+
+  .project-card:hover .project-thumb img {
+    transform: scale(1.06);
+  }
+
+  .project-card:hover .project-overlay {
+    opacity: 1;
+  }
+
+  .project-card:hover .project-title {
+    color: var(--link-accent);
+  }
+
+  /* Nav Links - Underline Sweep */
+  .nav-link:hover::after,
+  .nav-link.active::after {
+    transform: scaleX(1);
+  }
+
+  /* Why Us Cards */
+  .why-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-amber);
+  }
+
+  /* Contact Cards */
+  .contact-card:hover {
+    transform: translateX(4px);
+    border-color: var(--border-focus);
+  }
+
+  /* Social / Footer Icons */
+  .footer-link:hover {
+    color: #f5a623;
+    transform: translateX(3px);
+  }
+
+  .control-btn:hover {
+    transform: translateY(-1px);
+    border-color: var(--border-focus);
+  }
+
+  #theme-toggle:hover #theme-icon {
+    transform: rotate(180deg);
+  }
+
+  .back-to-top:hover {
+    transform: translateY(-3px);
+    background-color: var(--color-electric-blue);
+    color: #ffffff;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   STICKY NAVBAR & MOBILE DRAWER
    -------------------------------------------------------------------------- */
 .header {
   position: sticky;
@@ -398,15 +526,14 @@ button {
   width: 100%;
   z-index: 1000;
   background-color: var(--header-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border-color);
-  transition: all var(--transition);
+  transition: background-color var(--duration-fast) var(--ease-smooth);
 }
 
 .header.scrolled {
   background-color: var(--header-scrolled-bg);
-  box-shadow: var(--shadow-sm);
 }
 
 .header-container {
@@ -479,8 +606,8 @@ button {
   overflow: hidden;
   opacity: 0;
   pointer-events: none;
-  transition: max-height 0.3s ease, opacity 0.2s ease;
-  box-shadow: var(--shadow-hover);
+  transform: translateY(-8px);
+  transition: transform var(--duration-normal) var(--ease-smooth), opacity var(--duration-fast) var(--ease-smooth), max-height var(--duration-normal) var(--ease-smooth);
 }
 
 .nav-menu.open {
@@ -488,6 +615,7 @@ button {
   opacity: 1;
   pointer-events: auto;
   overflow-y: auto;
+  transform: translateY(0);
 }
 
 .nav-link {
@@ -495,12 +623,16 @@ button {
   font-weight: 500;
   color: var(--text-heading);
   width: 100%;
-  min-height: 44px; /* Accessible 44px minimum tap target */
+  min-height: 44px;
   display: flex;
   align-items: center;
   padding: 0.5rem 0.5rem;
   border-bottom: 1px solid var(--border-color);
-  transition: color 0.18s ease;
+  transition: color var(--duration-fast) var(--ease-smooth);
+}
+
+.nav-link:active {
+  transform: scale(0.98);
 }
 
 .nav-link:hover,
@@ -521,9 +653,9 @@ button {
     pointer-events: auto;
     overflow: visible;
     border-bottom: none;
-    box-shadow: none;
     background: transparent;
     backdrop-filter: none;
+    transform: none;
   }
 
   .nav-link {
@@ -540,19 +672,15 @@ button {
     position: absolute;
     left: 0;
     bottom: 0;
-    width: 0%;
+    width: 100%;
     height: 2.5px;
     background-color: var(--color-amber);
-    transition: width 0.2s ease;
-  }
-
-  .nav-link.active::after,
-  .nav-link:hover::after {
-    width: 100%;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--duration-fast) var(--ease-smooth);
   }
 }
 
-/* Header Controls */
 .header-actions {
   display: flex;
   align-items: center;
@@ -578,13 +706,15 @@ button {
   color: var(--text-body);
   font-size: 0.875rem;
   font-weight: 600;
-  transition: all 0.18s ease;
+  transition: transform var(--duration-fast) var(--ease-smooth), color var(--duration-fast) var(--ease-smooth);
 }
 
-.control-btn:hover {
-  background-color: var(--section-alt-bg);
-  color: var(--link-accent);
-  border-color: var(--border-focus);
+.control-btn:active {
+  transform: scale(0.95);
+}
+
+#theme-icon {
+  transition: transform 0.4s var(--ease-smooth);
 }
 
 .hamburger-btn {
@@ -612,7 +742,7 @@ button {
   height: 2px;
   background-color: var(--text-heading);
   border-radius: 2px;
-  transition: transform 0.25s ease, opacity 0.2s ease;
+  transition: transform var(--duration-fast) var(--ease-smooth), opacity var(--duration-fast) var(--ease-smooth);
 }
 
 .hamburger-btn.active span:nth-child(1) {
@@ -628,7 +758,7 @@ button {
 }
 
 /* --------------------------------------------------------------------------
-   HERO SECTION (100svh SAFE, BUTTONS STACK ON MOBILE)
+   HERO SECTION (100svh, CSS-ONLY SCANLINE & REC BLINK)
    -------------------------------------------------------------------------- */
 .hero {
   position: relative;
@@ -638,7 +768,7 @@ button {
   background: linear-gradient(135deg, #040e18 0%, #071a2b 60%, #0b2842 100%);
   color: #ffffff;
   padding: 4.5rem 0 5rem 0;
-  overflow: hidden;
+  overflow: clip;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
@@ -653,12 +783,13 @@ button {
   z-index: 1;
 }
 
+/* CSS Scanline (GPU Accelerated translateY) */
 .hero-scanlines {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 200%;
   pointer-events: none;
   z-index: 2;
   background: linear-gradient(
@@ -666,7 +797,20 @@ button {
     rgba(0, 0, 0, 0.4) 50%
   );
   background-size: 100% 4px;
-  opacity: 0.6;
+  opacity: 0.1;
+  animation: scanlineScroll 12s linear infinite;
+  will-change: transform;
+}
+
+@keyframes scanlineScroll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+/* Pause animations when hero is out of view */
+.hero.is-paused .hero-scanlines,
+.hero.is-paused .rec-dot {
+  animation-play-state: paused !important;
 }
 
 .viewfinder-frame {
@@ -766,18 +910,18 @@ button {
   letter-spacing: 0.05em;
 }
 
+/* Pulsing REC Dot (Pure Opacity Animation) */
 .rec-dot {
   width: 8px;
   height: 8px;
   background-color: #ef4444;
   border-radius: 50%;
   animation: recBlink 1.2s infinite ease-in-out;
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
 }
 
 @keyframes recBlink {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.2; transform: scale(0.85); }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
 }
 
 .hud-time {
@@ -825,7 +969,6 @@ button {
   }
 }
 
-/* Mobile Hero Buttons: 100% Width, Stacked */
 .hero-cta-group {
   display: flex;
   flex-direction: column;
@@ -882,7 +1025,7 @@ button {
 }
 
 /* --------------------------------------------------------------------------
-   ABOUT US SECTION (RESPONSIVE GRID)
+   ABOUT US SECTION
    -------------------------------------------------------------------------- */
 .about-grid {
   display: grid;
@@ -924,8 +1067,8 @@ button {
   font-weight: 600;
   font-size: 0.9rem;
   color: var(--text-heading);
-  box-shadow: var(--shadow-sm);
   word-break: break-word;
+  transition: transform var(--duration-fast) var(--ease-smooth);
 }
 
 .credential-pill i {
@@ -1016,7 +1159,7 @@ button {
 }
 
 /* --------------------------------------------------------------------------
-   SERVICES SECTION (CSS GRID 1 col mobile, 2 tablet, 3 desktop)
+   SERVICES SECTION (SCALE-X PSEUDO ELEMENT GLOW)
    -------------------------------------------------------------------------- */
 .services-grid {
   display: grid;
@@ -1044,38 +1187,35 @@ button {
   padding: 1.75rem 1.25rem;
   display: flex;
   flex-direction: column;
-  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
   position: relative;
   box-shadow: var(--shadow-card);
+  transition: transform var(--duration-normal) var(--ease-smooth), border-color var(--duration-normal) var(--ease-smooth);
 }
 
-@media (min-width: 640px) {
-  .service-card {
-    padding: 2rem 1.5rem;
-  }
+.service-card:active {
+  transform: scale(0.98);
 }
 
+/* Blue Top Border Glow (Pure scaleX transform) */
 .service-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 0px;
+  height: 4px;
   background-color: var(--card-top-glow);
   border-top-left-radius: var(--radius-card);
   border-top-right-radius: var(--radius-card);
-  transition: height 0.2s ease;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform var(--duration-normal) var(--ease-smooth);
 }
 
-.service-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--border-focus);
-  box-shadow: var(--shadow-hover);
-}
-
-.service-card:hover::before {
-  height: 4px;
+@media (min-width: 640px) {
+  .service-card {
+    padding: 2rem 1.5rem;
+  }
 }
 
 .service-icon-wrap {
@@ -1090,12 +1230,7 @@ button {
   font-size: 1.4rem;
   color: var(--link-accent);
   margin-bottom: 1.25rem;
-  transition: transform var(--transition);
-}
-
-.service-card:hover .service-icon-wrap {
-  transform: scale(1.08);
-  color: var(--color-amber);
+  transition: transform var(--duration-normal) var(--ease-smooth), color var(--duration-normal) var(--ease-smooth), background-color var(--duration-normal) var(--ease-smooth);
 }
 
 .service-title {
@@ -1153,16 +1288,18 @@ button {
   border: 1px solid var(--border-color);
   background-color: var(--cards-bg);
   color: var(--text-body);
-  transition: all 0.18s ease;
+  transition: transform var(--duration-fast) var(--ease-smooth), background-color var(--duration-fast) var(--ease-smooth), color var(--duration-fast) var(--ease-smooth);
   min-height: 40px;
 }
 
-.filter-btn:hover,
+.filter-btn:active {
+  transform: scale(0.96);
+}
+
 .filter-btn.active {
   background-color: var(--color-electric-blue);
   border-color: var(--color-electric-blue);
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(11, 95, 165, 0.3);
 }
 
 .projects-grid {
@@ -1189,14 +1326,13 @@ button {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-card);
   overflow: hidden;
-  transition: transform var(--transition), box-shadow var(--transition);
-  cursor: pointer;
   box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition: transform var(--duration-normal) var(--ease-smooth);
 }
 
-.project-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-hover);
+.project-card:active {
+  transform: scale(0.98);
 }
 
 .project-thumb {
@@ -1211,11 +1347,7 @@ button {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
-}
-
-.project-card:hover .project-thumb img {
-  transform: scale(1.05);
+  transition: transform var(--duration-slow) var(--ease-smooth);
 }
 
 .project-overlay {
@@ -1224,16 +1356,12 @@ button {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(7, 26, 43, 0.65);
+  background: linear-gradient(180deg, rgba(7, 26, 43, 0.2) 0%, rgba(7, 26, 43, 0.85) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.project-card:hover .project-overlay {
-  opacity: 1;
+  transition: opacity var(--duration-normal) var(--ease-smooth);
 }
 
 .project-view-icon {
@@ -1278,6 +1406,7 @@ button {
 
 .project-title {
   margin-bottom: 0.45rem;
+  transition: color var(--duration-fast) var(--ease-smooth);
 }
 
 .project-desc-excerpt {
@@ -1286,7 +1415,7 @@ button {
   line-height: 1.55;
 }
 
-/* Lightbox Modal: Fits completely on mobile */
+/* Lightbox Modal (GPU Scale & Opacity) */
 .lightbox {
   position: fixed;
   top: 0;
@@ -1302,8 +1431,8 @@ button {
   justify-content: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease;
   padding: 12px;
+  transition: opacity var(--duration-normal) var(--ease-smooth);
 }
 
 .lightbox.active {
@@ -1323,6 +1452,12 @@ button {
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
   display: flex;
   flex-direction: column;
+  transform: scale(0.96);
+  transition: transform var(--duration-normal) var(--ease-smooth);
+}
+
+.lightbox.active .lightbox-content {
+  transform: scale(1);
 }
 
 .lightbox-media {
@@ -1340,6 +1475,7 @@ button {
   max-height: 48svh;
   width: 100%;
   object-fit: contain;
+  transition: opacity 0.25s var(--ease-smooth);
 }
 
 .lightbox-caption {
@@ -1372,7 +1508,6 @@ button {
   color: var(--text-body);
 }
 
-/* Lightbox Big Reachable Touch Controls */
 .lightbox-close {
   position: absolute;
   top: 0.75rem;
@@ -1390,12 +1525,11 @@ button {
   font-size: 1.25rem;
   cursor: pointer;
   z-index: 20;
-  transition: transform 0.18s ease;
+  transition: transform var(--duration-fast) var(--ease-smooth);
 }
 
-.lightbox-close:hover {
-  background-color: var(--color-amber);
-  color: #071a2b;
+.lightbox-close:active {
+  transform: scale(0.92);
 }
 
 .lightbox-nav {
@@ -1415,11 +1549,11 @@ button {
   font-size: 1.15rem;
   cursor: pointer;
   z-index: 20;
-  transition: transform 0.18s ease;
+  transition: transform var(--duration-fast) var(--ease-smooth);
 }
 
-.lightbox-nav:hover {
-  background-color: var(--color-electric-blue);
+.lightbox-nav:active {
+  transform: translateY(-50%) scale(0.92);
 }
 
 .lightbox-prev {
@@ -1458,18 +1592,17 @@ button {
   border-radius: var(--radius-card);
   padding: 1.75rem 1.25rem;
   box-shadow: var(--shadow-card);
-  transition: transform var(--transition), border-color var(--transition);
+  transition: transform var(--duration-normal) var(--ease-smooth), border-color var(--duration-normal) var(--ease-smooth);
+}
+
+.why-card:active {
+  transform: scale(0.98);
 }
 
 @media (min-width: 640px) {
   .why-card {
     padding: 2.25rem 1.75rem;
   }
-}
-
-.why-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--color-amber);
 }
 
 .why-icon {
@@ -1496,7 +1629,7 @@ button {
 }
 
 /* --------------------------------------------------------------------------
-   CONTACT SECTION & FORM (WIDTH 100%, 16px INPUT FONT TO PREVENT IOS ZOOM)
+   CONTACT SECTION & ENQUIRY FORM
    -------------------------------------------------------------------------- */
 .contact-grid {
   display: grid;
@@ -1526,7 +1659,11 @@ button {
   align-items: flex-start;
   gap: 1rem;
   box-shadow: var(--shadow-card);
-  transition: border-color var(--transition), transform var(--transition);
+  transition: transform var(--duration-fast) var(--ease-smooth), border-color var(--duration-fast) var(--ease-smooth);
+}
+
+.contact-card:active {
+  transform: scale(0.98);
 }
 
 @media (min-width: 640px) {
@@ -1534,11 +1671,6 @@ button {
     padding: 1.75rem;
     gap: 1.25rem;
   }
-}
-
-.contact-card:hover {
-  border-color: var(--border-focus);
-  transform: translateX(4px);
 }
 
 .contact-card-icon {
@@ -1568,7 +1700,6 @@ button {
   margin-bottom: 0.85rem;
 }
 
-/* Google Maps Iframe: Height 300px on mobile */
 .map-container {
   background-color: var(--cards-bg);
   border: 1px solid var(--border-color);
@@ -1605,7 +1736,6 @@ button {
   gap: 0.5rem;
 }
 
-/* Enquiry Form */
 .enquiry-panel {
   background-color: var(--cards-bg);
   border: 1px solid var(--border-color);
@@ -1651,7 +1781,6 @@ button {
   color: var(--color-amber);
 }
 
-/* Form inputs: min 16px font-size to prevent iOS Safari auto-zoom */
 .form-control {
   width: 100%;
   padding: 0.85rem 1rem;
@@ -1660,7 +1789,7 @@ button {
   border-radius: var(--radius-btn);
   color: var(--text-heading);
   font-size: 16px !important;
-  transition: border-color var(--transition);
+  transition: border-color var(--duration-fast) var(--ease-smooth);
 }
 
 .form-control:focus {
@@ -1669,6 +1798,13 @@ button {
 
 .form-control.is-invalid {
   border-color: var(--error-color);
+  animation: inputShake 0.35s var(--ease-smooth);
+}
+
+@keyframes inputShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
 }
 
 .form-error {
@@ -1681,6 +1817,12 @@ button {
 
 .form-control.is-invalid + .form-error {
   display: block;
+  animation: fadeIn 0.25s var(--ease-smooth);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 select.form-control {
@@ -1713,6 +1855,12 @@ select.form-control {
 
 .form-success-banner.active {
   display: flex;
+  animation: fadeSlideUp 0.4s var(--ease-smooth);
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* --------------------------------------------------------------------------
@@ -1778,11 +1926,7 @@ select.form-control {
   align-items: center;
   gap: 0.5rem;
   min-height: 36px;
-  transition: color 0.18s ease;
-}
-
-.footer-link:hover {
-  color: #f5a623;
+  transition: color var(--duration-fast) var(--ease-smooth), transform var(--duration-fast) var(--ease-smooth);
 }
 
 .footer-contact-list {
@@ -1868,7 +2012,7 @@ select.form-control {
   opacity: 0;
   pointer-events: none;
   transform: translateY(12px);
-  transition: all 0.2s ease;
+  transition: transform var(--duration-fast) var(--ease-smooth), opacity var(--duration-fast) var(--ease-smooth);
   box-shadow: var(--shadow-card);
 }
 
@@ -1885,40 +2029,44 @@ select.form-control {
   transform: translateY(0);
 }
 
-.back-to-top:hover {
-  background-color: var(--color-electric-blue);
-  color: #ffffff;
-}
-
 /* --------------------------------------------------------------------------
-   LIGHTWEIGHT MOBILE ANIMATIONS
+   STRICT SCROLL REVEALS & ACCESSIBILITY FALLBACKS
+   Zero-JS fallback: If JS is disabled or not loaded, everything remains 100% visible!
    -------------------------------------------------------------------------- */
+/* Default (No-JS): Fully visible */
 .reveal-init {
-  opacity: 0;
-  transform: translateY(14px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  opacity: 1;
+  transform: none;
 }
 
-.reveal-visible {
+/* Only hide if html has .js class */
+html.js .reveal-init {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.4s var(--ease-smooth), transform 0.4s var(--ease-smooth);
+}
+
+@media (min-width: 768px) {
+  html.js .reveal-init {
+    transform: translateY(24px);
+    transition-duration: 0.5s;
+  }
+}
+
+html.js .reveal-init.reveal-visible {
   opacity: 1;
   transform: translateY(0);
 }
 
-@media (min-width: 768px) {
-  .reveal-init {
-    transform: translateY(22px);
-    transition-duration: 0.55s;
-  }
-}
-
+/* Reduced Motion Override */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-  .reveal-init {
+  html.js .reveal-init {
     opacity: 1 !important;
     transform: none !important;
   }

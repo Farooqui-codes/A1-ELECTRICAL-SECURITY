@@ -1,16 +1,6 @@
 /**
  * A1 ELECTRICAL & SECURITY - Master Application Logic (Phase 1 Refined)
- * Features:
- * - Bilingual Language Switcher (English <-> Hindi) with instant DOM updates
- * - Theme Switcher (Dark / Light) with system detection & localStorage memory
- * - Mobile Drawer Menu & Sticky Nav with smooth scroll & scroll-spy
- * - Dynamic Service Cards rendering & "Get Quote" auto-selection
- * - Dynamic Portfolio Projects rendering with filter tabs
- * - Full-featured Lightbox (Next/Prev, Keyboard shortcuts, Swipe detection)
- * - 10-digit Indian Mobile validation with real-time feedback
- * - LocalStorage lead persistence & automatic WhatsApp URI dispatch
- * - Surveillance HUD live ticking clock
- * - IntersectionObserver Scroll Reveal animations
+ * GPU-Only Animations, RAF Scroll Throttling, Hero Visibility Observer
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -79,13 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const dict = APP_DATA.translations[lang] || APP_DATA.translations.en;
 
-    // Update Language Toggle Button Label
     if (langLabel) {
       langLabel.textContent = lang === 'en' ? 'हिन्दी' : 'English';
       langToggleBtn.setAttribute('title', lang === 'en' ? 'Switch to Hindi' : 'Switch to English');
     }
 
-    // Update all static data-i18n elements
     document.querySelectorAll('[data-i18n]').forEach((el) => {
       const key = el.getAttribute('data-i18n');
       const translation = getNestedTranslation(dict, key);
@@ -94,7 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Update form placeholders
     const nameInput = document.getElementById('client-name');
     const phoneInput = document.getElementById('client-phone');
     const emailInput = document.getElementById('client-email');
@@ -105,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (emailInput) emailInput.placeholder = dict.contact.placeholderEmail;
     if (messageInput) messageInput.placeholder = dict.contact.placeholderMessage;
 
-    // Re-render dynamic sections with the new language
     renderServices();
     renderProjects(state.activeFilter);
     renderWhyChooseUs();
@@ -119,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     3. STICKY NAVBAR, SCROLL SPY & MOBILE DRAWER
+     3. STICKY NAVBAR, SCROLL SPY & MOBILE DRAWER (RAF THROTTLED)
      ========================================================================== */
   const header = document.getElementById('header');
   const hamburgerBtn = document.getElementById('hamburger-btn');
@@ -127,7 +113,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const navLinks = document.querySelectorAll('.nav-link');
   const backToTopBtn = document.getElementById('back-to-top');
 
+  let isTicking = false;
   window.addEventListener('scroll', () => {
+    if (!isTicking) {
+      window.requestAnimationFrame(() => {
+        handleScroll();
+        isTicking = false;
+      });
+      isTicking = true;
+    }
+  }, { passive: true });
+
+  function handleScroll() {
     const scrollPos = window.scrollY;
 
     if (scrollPos > 40) {
@@ -158,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
     });
-  }, { passive: true });
+  }
 
   if (backToTopBtn) {
     backToTopBtn.addEventListener('click', () => {
@@ -166,32 +163,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Mobile Menu with body scroll lock toggle
+  function closeMobileMenu() {
+    if (!navMenu || !hamburgerBtn) return;
+    navMenu.classList.remove('open');
+    hamburgerBtn.classList.remove('active');
+    hamburgerBtn.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('scroll-locked');
+  }
+
   if (hamburgerBtn && navMenu) {
     hamburgerBtn.addEventListener('click', () => {
       const isOpen = navMenu.classList.toggle('open');
       hamburgerBtn.classList.toggle('active', isOpen);
       hamburgerBtn.setAttribute('aria-expanded', isOpen);
+      if (isOpen) {
+        document.body.classList.add('scroll-locked');
+      } else {
+        document.body.classList.remove('scroll-locked');
+      }
     });
 
     navLinks.forEach((link) => {
-      link.addEventListener('click', () => {
-        navMenu.classList.remove('open');
-        hamburgerBtn.classList.remove('active');
-        hamburgerBtn.setAttribute('aria-expanded', 'false');
-      });
+      link.addEventListener('click', closeMobileMenu);
     });
 
     document.addEventListener('click', (e) => {
       if (!navMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
-        navMenu.classList.remove('open');
-        hamburgerBtn.classList.remove('active');
-        hamburgerBtn.setAttribute('aria-expanded', 'false');
+        closeMobileMenu();
       }
     });
   }
 
   /* ==========================================================================
-     4. SURVEILLANCE HUD LIVE CLOCK
+     4. SURVEILLANCE HUD LIVE CLOCK & HERO VISIBILITY OBSERVER
      ========================================================================== */
   const hudClock = document.getElementById('hud-clock');
   function updateHudClock() {
@@ -204,6 +209,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   updateHudClock();
   setInterval(updateHudClock, 1000);
+
+  // Pause Hero Scanline animation when hero is not visible (battery saver)
+  const heroSection = document.getElementById('home');
+  if (heroSection && 'IntersectionObserver' in window) {
+    const heroObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) {
+          heroSection.classList.add('is-paused');
+        } else {
+          heroSection.classList.remove('is-paused');
+        }
+      });
+    }, { threshold: 0.05 });
+    heroObserver.observe(heroSection);
+  }
 
   /* ==========================================================================
      5. RENDER SERVICES & "GET QUOTE" AUTO-ROUTING
@@ -322,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       card.innerHTML = `
         <div class="project-thumb">
-          <img src="${project.image}" alt="${title}" loading="lazy">
+          <img src="${project.image}" alt="${title}" loading="lazy" width="800" height="500">
           <div class="project-overlay" aria-hidden="true">
             <div class="project-view-icon">
               <i class="fa-solid fa-expand"></i>
@@ -386,7 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateLightboxContent();
     lightbox.classList.add('active');
     lightbox.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    document.body.classList.add('scroll-locked');
     lightboxClose.focus();
   }
 
@@ -394,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!lightbox) return;
     lightbox.classList.remove('active');
     lightbox.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+    document.body.classList.remove('scroll-locked');
   }
 
   function updateLightboxContent() {
@@ -406,11 +426,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const loc = isHi ? project.locationHi : project.locationEn;
     const desc = isHi ? project.descHi : project.descEn;
 
-    lightboxImg.src = project.image;
-    lightboxImg.alt = title;
-    lightboxTitle.textContent = title;
-    lightboxLocation.innerHTML = `<i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span>${loc}</span>`;
-    lightboxDesc.textContent = desc;
+    // Crossfade effect
+    lightboxImg.style.opacity = '0';
+    setTimeout(() => {
+      lightboxImg.src = project.image;
+      lightboxImg.alt = title;
+      lightboxTitle.textContent = title;
+      lightboxLocation.innerHTML = `<i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span>${loc}</span>`;
+      lightboxDesc.textContent = desc;
+      lightboxImg.style.opacity = '1';
+    }, 120);
   }
 
   function nextLightbox() {
@@ -510,6 +535,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const emailInput = document.getElementById('client-email');
   const messageInput = document.getElementById('client-message');
   const successBanner = document.getElementById('form-success-banner');
+  const submitBtn = document.getElementById('submit-form-btn');
 
   if (phoneInput) {
     phoneInput.addEventListener('input', (e) => {
@@ -589,6 +615,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      // Visual button loading state
+      if (submitBtn) {
+        submitBtn.style.opacity = '0.7';
+        submitBtn.style.pointerEvents = 'none';
+      }
+
       const leadData = {
         name: nameInput.value.trim(),
         phone: phoneInput.value.trim(),
@@ -625,13 +657,17 @@ document.addEventListener('DOMContentLoaded', () => {
       enquiryForm.reset();
 
       setTimeout(() => {
+        if (submitBtn) {
+          submitBtn.style.opacity = '';
+          submitBtn.style.pointerEvents = '';
+        }
         window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
-      }, 1000);
+      }, 900);
     });
   }
 
   /* ==========================================================================
-     9. SCROLL REVEAL OBSERVER
+     9. STRICT GPU SCROLL REVEAL (MAX 4 STAGGER ON DESKTOP, SIMPLE ON MOBILE)
      ========================================================================== */
   function observeReveals() {
     const revealElements = document.querySelectorAll('.reveal-init:not(.reveal-observed)');
@@ -640,21 +676,36 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+
     const observer = new IntersectionObserver((entries, obs) => {
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('reveal-visible');
-          obs.unobserve(entry.target);
+          const el = entry.target;
+          
+          if (isDesktop && el.dataset.staggerIndex) {
+            const idx = Math.min(parseInt(el.dataset.staggerIndex, 10) || 0, 4);
+            setTimeout(() => {
+              el.classList.add('reveal-visible');
+            }, idx * 80);
+          } else {
+            el.classList.add('reveal-visible');
+          }
+          
+          obs.unobserve(el);
         }
       });
     }, {
       root: null,
-      threshold: 0.12,
+      threshold: 0.15,
       rootMargin: '0px 0px -40px 0px'
     });
 
+    let index = 0;
     revealElements.forEach(el => {
       el.classList.add('reveal-observed');
+      el.dataset.staggerIndex = String(index % 4);
+      index++;
       observer.observe(el);
     });
   }
@@ -664,6 +715,6 @@ document.addEventListener('DOMContentLoaded', () => {
     yearElem.textContent = new Date().getFullYear();
   }
 
-  // Initialize Language and Components
+  // Initialize
   applyLanguage(state.lang);
 });
