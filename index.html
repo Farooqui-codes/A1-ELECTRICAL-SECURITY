@@ -21,10 +21,10 @@
   <!-- Font Awesome 6 Icons (Free CDN) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <!-- Google Fonts: Poppins (Headings: 600, 700, 800) + Inter (Body: 400, 500, 600) + JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
 
   <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
@@ -120,15 +120,15 @@
       <!-- Brand Logo -->
       <a href="#home" class="brand" aria-label="A1 Electrical &amp; Security Home">
         <div class="brand-badge">
-          <i class="fa-solid fa-bolt-lightning"></i>
+          <span>A1</span>
         </div>
         <div class="brand-text">
-          <span class="brand-title">A1 <span>ELECTRICAL</span></span>
-          <span class="brand-subtitle">&amp; SECURITY // MUMBAI</span>
+          <span class="brand-title">Electrical &amp; Security</span>
+          <span class="brand-subtitle">Malvani, Malad (W), Mumbai</span>
         </div>
       </a>
 
-      <!-- Desktop & Mobile Navigation Links -->
+      <!-- Navigation Links -->
       <nav class="nav-menu" id="nav-menu" role="navigation" aria-label="Main Navigation">
         <a href="#home" class="nav-link active" data-i18n="nav.home">Home</a>
         <a href="#about" class="nav-link" data-i18n="nav.about">About Us</a>
@@ -138,17 +138,23 @@
         <a href="#contact" class="nav-link" data-i18n="nav.contact">Contact</a>
       </nav>
 
-      <!-- Action Controls (Theme, Language, Hamburger) -->
+      <!-- Action Controls (Theme, Language, Call, Hamburger) -->
       <div class="header-actions">
-        <!-- Theme Toggle (Dark / Light) -->
-        <button class="control-btn" id="theme-toggle" aria-label="Switch Light and Dark Mode" title="Toggle Light/Dark Theme">
-          <i class="fa-solid fa-sun" id="theme-icon"></i>
+        <!-- Language Switcher Button (English / Hindi) -->
+        <button class="control-btn lang-toggle-btn" id="lang-toggle" aria-label="Switch Language to Hindi" title="Change Language">
+          <i class="fa-solid fa-globe" aria-hidden="true"></i>
+          <span id="lang-label">हिन्दी</span>
         </button>
 
-        <!-- Direct Call Quick Button (Desktop / Tablet) -->
-        <a href="tel:8767964993" class="btn btn-primary btn-sm d-none-mobile" aria-label="Call Farooqui Sufiyan at 8767964993">
-          <i class="fa-solid fa-phone"></i>
-          <span>8767964993</span>
+        <!-- Theme Toggle (Dark / Light) -->
+        <button class="control-btn" id="theme-toggle" aria-label="Switch Light and Dark Mode" title="Toggle Light/Dark Theme">
+          <i class="fa-solid fa-sun" id="theme-icon" aria-hidden="true"></i>
+        </button>
+
+        <!-- Call Button (Desktop) -->
+        <a href="tel:8767964993" class="btn btn-primary btn-sm d-none-mobile" aria-label="Call 8767964993">
+          <i class="fa-solid fa-phone" aria-hidden="true"></i>
+          <span data-i18n="nav.callNow">Call Now</span>
         </a>
 
         <!-- Mobile Hamburger Toggle -->
@@ -165,11 +171,11 @@
   <main role="main">
 
     <!-- ======================================================================
-         1. HERO SECTION - HIGH-TECH SURVEILLANCE VIEWFINDER HUD
+         1. HERO SECTION - HIGH-TECH SURVEILLANCE VIEWFINDER HUD (ALWAYS DARK)
          ====================================================================== -->
     <section class="hero" id="home" aria-labelledby="hero-title">
+      <div class="hero-overlay" aria-hidden="true"></div>
       <div class="hero-scanlines" aria-hidden="true"></div>
-      <div class="hero-grid" aria-hidden="true"></div>
 
       <div class="container">
         <div class="viewfinder-frame reveal-init">
@@ -183,23 +189,20 @@
               <span class="rec-dot" aria-hidden="true"></span>
               <span>LIVE // SURVEILLANCE &amp; POWER</span>
             </div>
-            <div class="hud-coords">
-              <span>LOC: 19.1963° N, 72.8080° E [MALAD-W]</span>
-            </div>
             <div class="hud-time" id="hud-clock">
-              SYS TIME: 12:45:00 UTC+5:30
+              SYS TIME: 12:45:00 IST
             </div>
           </div>
 
           <!-- Hero Main Content -->
           <div class="hero-content">
             <div class="hero-status-pill">
-              <i class="fa-solid fa-circle-check"></i>
+              <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
               <span data-i18n="hero.status">OPERATIONAL &amp; ACTIVE // MALAD (WEST)</span>
             </div>
 
-            <h1 class="hero-headline" id="hero-title">
-              Professional CCTV &amp; Electrical Engineering <span>You Can Trust</span>
+            <h1 class="hero-headline" id="hero-title" data-i18n="hero.headline">
+              Professional CCTV &amp; Electrical Engineering You Can Trust
             </h1>
 
             <p class="hero-subheadline" data-i18n="hero.subheadline">
@@ -209,33 +212,33 @@
             <!-- Dual Conversion CTAs -->
             <div class="hero-cta-group">
               <a href="tel:8767964993" class="btn btn-primary btn-lg" id="hero-call-btn">
-                <i class="fa-solid fa-phone-volume"></i>
+                <i class="fa-solid fa-phone-volume" aria-hidden="true"></i>
                 <span data-i18n="hero.btnCall">Call: 8767964993</span>
               </a>
 
               <a href="https://wa.me/917506191312?text=Hello%20Farooqui%20Sufiyan%2C%20I%20am%20interested%20in%20CCTV%20and%20Electrical%20services%20for%20my%20property." target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-lg" id="hero-whatsapp-btn">
-                <i class="fa-brands fa-whatsapp"></i>
+                <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
                 <span data-i18n="hero.btnWhatsapp">Chat on WhatsApp</span>
               </a>
 
-              <a href="#services" class="btn btn-outline btn-lg">
-                <i class="fa-solid fa-list-check"></i>
-                <span>Explore Services</span>
+              <a href="#services" class="btn btn-outline btn-lg" style="color: #ffffff !important; border-color: rgba(255,255,255,0.4);">
+                <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+                <span data-i18n="hero.btnExplore">Explore Services</span>
               </a>
             </div>
 
             <!-- Authentic Trust Badges -->
             <div class="hero-badges-row">
               <div class="hero-badge-item">
-                <i class="fa-solid fa-shield-halved"></i>
+                <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
                 <span data-i18n="hero.badge1">100% Genuine Work</span>
               </div>
               <div class="hero-badge-item">
-                <i class="fa-solid fa-location-dot"></i>
+                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
                 <span data-i18n="hero.badge2">Local Malad Service</span>
               </div>
               <div class="hero-badge-item">
-                <i class="fa-solid fa-bolt"></i>
+                <i class="fa-solid fa-bolt" aria-hidden="true"></i>
                 <span data-i18n="hero.badge3">CCTV &amp; Power Specialist</span>
               </div>
             </div>
@@ -255,7 +258,7 @@
           
           <div class="about-text reveal-init">
             <div class="section-tag">
-              <i class="fa-solid fa-circle-info"></i>
+              <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
               <span data-i18n="about.tag">ABOUT THE BUSINESS</span>
             </div>
             <h2 id="about-title" data-i18n="about.title">
@@ -270,48 +273,48 @@
 
             <div class="about-credentials">
               <div class="credential-pill">
-                <i class="fa-solid fa-user-shield"></i>
+                <i class="fa-solid fa-user-shield" aria-hidden="true"></i>
                 <span data-i18n="about.ownerBadge">Proprietor: Farooqui Sufiyan</span>
               </div>
               <div class="credential-pill">
-                <i class="fa-solid fa-map-pin"></i>
+                <i class="fa-solid fa-map-pin" aria-hidden="true"></i>
                 <span data-i18n="about.locationBadge">Location: Gate No. 05, Malvani, Malad (West), Mumbai</span>
               </div>
             </div>
           </div>
 
-          <!-- Technical Discipline Summary Card -->
+          <!-- Lead Technician Credential Card -->
           <div class="about-card reveal-init">
             <div class="about-card-header">
-              <div class="about-card-avatar">
+              <div class="about-card-avatar" aria-hidden="true">
                 <i class="fa-solid fa-user-tie"></i>
               </div>
               <div>
-                <h3 class="about-card-name">Farooqui Sufiyan</h3>
-                <span class="about-card-role">Proprietor &amp; Lead Technician</span>
+                <h3 class="about-card-name" data-i18n="about.cardName">Farooqui Sufiyan</h3>
+                <span class="about-card-role" data-i18n="about.cardRole">Proprietor &amp; Lead Technician</span>
               </div>
             </div>
 
             <div class="about-card-list">
               <div class="about-card-list-item">
-                <i class="fa-solid fa-check"></i>
-                <span>Direct on-site inspection, diagnostics, and transparent quotes.</span>
+                <i class="fa-solid fa-check" aria-hidden="true"></i>
+                <span data-i18n="about.c1">Direct on-site inspection, diagnostics, and transparent quotes.</span>
               </div>
               <div class="about-card-list-item">
-                <i class="fa-solid fa-check"></i>
-                <span>All types of bullet, dome, IP, and wireless camera installations.</span>
+                <i class="fa-solid fa-check" aria-hidden="true"></i>
+                <span data-i18n="about.c2">All types of bullet, dome, IP, and wireless camera installations.</span>
               </div>
               <div class="about-card-list-item">
-                <i class="fa-solid fa-check"></i>
-                <span>Complete residential and commercial concealed conduit rewiring.</span>
+                <i class="fa-solid fa-check" aria-hidden="true"></i>
+                <span data-i18n="about.c3">Complete residential and commercial concealed conduit rewiring.</span>
               </div>
               <div class="about-card-list-item">
-                <i class="fa-solid fa-check"></i>
-                <span>Circuit breaker, MCB/RCCB distribution box upgrades &amp; load safety.</span>
+                <i class="fa-solid fa-check" aria-hidden="true"></i>
+                <span data-i18n="about.c4">Circuit breaker, MCB/RCCB distribution box upgrades &amp; load safety.</span>
               </div>
               <div class="about-card-list-item">
-                <i class="fa-solid fa-check"></i>
-                <span>Prompt repair response across Malad West, Malvani, and suburbs.</span>
+                <i class="fa-solid fa-check" aria-hidden="true"></i>
+                <span data-i18n="about.c5">Prompt repair response across Malad West, Malvani, and suburbs.</span>
               </div>
             </div>
           </div>
@@ -329,7 +332,7 @@
         
         <div class="section-header reveal-init">
           <div class="section-tag">
-            <i class="fa-solid fa-microchip"></i>
+            <i class="fa-solid fa-microchip" aria-hidden="true"></i>
             <span data-i18n="servicesSection.tag">SPECIALIZED CAPABILITIES</span>
           </div>
           <h2 class="section-title" id="services-title" data-i18n="servicesSection.title">
@@ -341,7 +344,7 @@
         </div>
 
         <div class="services-grid" id="services-container">
-          <!-- Populated dynamically from js/data.js -->
+          <!-- Populated dynamically via js/main.js & js/data.js -->
         </div>
 
       </div>
@@ -355,7 +358,7 @@
         
         <div class="section-header reveal-init">
           <div class="section-tag">
-            <i class="fa-solid fa-camera"></i>
+            <i class="fa-solid fa-camera" aria-hidden="true"></i>
             <span data-i18n="projectsSection.tag">PORTFOLIO &amp; WORK SAMPLES</span>
           </div>
           <h2 class="section-title" id="projects-title" data-i18n="projectsSection.title">
@@ -382,34 +385,28 @@
       </div>
     </section>
 
-    <!-- ======================================================================
-         LIGHTBOX MODAL FOR PROJECTS
-         ====================================================================== -->
+    <!-- Lightbox Modal -->
     <div class="lightbox" id="project-lightbox" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Project Preview Lightbox">
       <div class="lightbox-content">
-        <!-- Close Button -->
         <button class="lightbox-close" id="lightbox-close" aria-label="Close Lightbox Dialog">
-          <i class="fa-solid fa-xmark"></i>
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
         </button>
 
-        <!-- Navigation Buttons -->
         <button class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="Previous Project Image">
-          <i class="fa-solid fa-chevron-left"></i>
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
         </button>
         <button class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="Next Project Image">
-          <i class="fa-solid fa-chevron-right"></i>
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
         </button>
 
-        <!-- Media Display Area -->
         <div class="lightbox-media">
           <img id="lightbox-img" src="" alt="Project Photo Full View">
         </div>
 
-        <!-- Text Details -->
         <div class="lightbox-caption">
           <h3 class="lightbox-title" id="lightbox-title">Project Title</h3>
           <div class="lightbox-location" id="lightbox-location">
-            <i class="fa-solid fa-location-dot"></i>
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
             <span>Location</span>
           </div>
           <p class="lightbox-desc" id="lightbox-desc">Detailed project description will display here.</p>
@@ -418,14 +415,14 @@
     </div>
 
     <!-- ======================================================================
-         5. WHY CHOOSE US (HONEST LOCAL ADVANTAGES ONLY)
+         5. WHY CHOOSE US (GENUINE BENEFITS ONLY)
          ====================================================================== -->
     <section class="section section-alt" id="why-us" aria-labelledby="why-title">
       <div class="container">
         
         <div class="section-header reveal-init">
           <div class="section-tag">
-            <i class="fa-solid fa-award"></i>
+            <i class="fa-solid fa-award" aria-hidden="true"></i>
             <span data-i18n="whyUs.tag">THE A1 ADVANTAGE</span>
           </div>
           <h2 class="section-title" id="why-title" data-i18n="whyUs.title">
@@ -437,7 +434,7 @@
         </div>
 
         <div class="why-grid" id="why-grid-container">
-          <!-- Injected via data.js -->
+          <!-- Injected via main.js from data.js -->
         </div>
 
       </div>
@@ -451,7 +448,7 @@
         
         <div class="section-header reveal-init">
           <div class="section-tag">
-            <i class="fa-solid fa-headset"></i>
+            <i class="fa-solid fa-headset" aria-hidden="true"></i>
             <span data-i18n="contact.tag">GET IN TOUCH</span>
           </div>
           <h2 class="section-title" id="contact-title" data-i18n="contact.title">
@@ -464,37 +461,37 @@
 
         <div class="contact-grid">
           
-          <!-- Contact Details & Map Embed Column -->
+          <!-- Contact Details Column -->
           <div class="contact-info-wrap reveal-init">
             
             <!-- Direct Call Card -->
             <a href="tel:8767964993" class="contact-card">
-              <div class="contact-card-icon">
+              <div class="contact-card-icon" aria-hidden="true">
                 <i class="fa-solid fa-phone"></i>
               </div>
               <div class="contact-card-content">
                 <h3 data-i18n="contact.directCall">Direct Phone Call</h3>
-                <p>Speak directly with Farooqui Sufiyan for emergency repairs or consultation.</p>
-                <span class="btn btn-primary btn-sm">Call +91 87679 64993</span>
+                <p data-i18n="contact.callSubtext">Speak directly with Farooqui Sufiyan for emergency repairs or consultation.</p>
+                <span class="btn btn-primary btn-sm">8767964993</span>
               </div>
             </a>
 
             <!-- WhatsApp Card -->
             <a href="https://wa.me/917506191312?text=Hello%20Farooqui%20Sufiyan%2C%20I%20need%20a%20quote%20for%20electrical%20or%20CCTV%20services." target="_blank" rel="noopener noreferrer" class="contact-card">
-              <div class="contact-card-icon">
+              <div class="contact-card-icon" aria-hidden="true">
                 <i class="fa-brands fa-whatsapp"></i>
               </div>
               <div class="contact-card-content">
                 <h3 data-i18n="contact.whatsappChat">Instant WhatsApp Chat</h3>
-                <p>Send photos of your switchboard, damaged wires, or camera installation layout.</p>
-                <span class="btn btn-whatsapp btn-sm">WhatsApp +91 75061 91312</span>
+                <p data-i18n="contact.whatsappSubtext">Send photos of your switchboard, damaged wires, or camera installation layout.</p>
+                <span class="btn btn-whatsapp btn-sm">7506191312</span>
               </div>
             </a>
 
-            <!-- Location Details & Google Maps Embed -->
+            <!-- Location & Google Maps -->
             <div class="contact-card" style="display:block;">
               <div style="display:flex; align-items:flex-start; gap:1.25rem; margin-bottom:1rem;">
-                <div class="contact-card-icon">
+                <div class="contact-card-icon" aria-hidden="true">
                   <i class="fa-solid fa-location-dot"></i>
                 </div>
                 <div class="contact-card-content">
@@ -503,7 +500,6 @@
                 </div>
               </div>
 
-              <!-- Real Google Maps Embed -->
               <div class="map-container">
                 <iframe 
                   class="map-frame" 
@@ -515,11 +511,11 @@
                 </iframe>
                 <div class="map-action">
                   <span class="map-label">
-                    <i class="fa-solid fa-map-location-dot"></i>
+                    <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
                     Malvani Gate No. 05, Malad (W)
                   </span>
                   <a href="https://www.google.com/maps/search/?api=1&query=Gate+No.+05+Malvani+Malad+West+Mumbai" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
                     <span data-i18n="contact.getDirections">Get Directions</span>
                   </a>
                 </div>
@@ -532,19 +528,17 @@
           <div class="enquiry-panel reveal-init">
             <div class="form-header">
               <h3 class="form-title" data-i18n="contact.formTitle">Send an Instant Enquiry</h3>
-              <p class="form-desc">Fill in your requirement. Submitting will save your request and open WhatsApp directly with all details pre-filled.</p>
+              <p class="form-desc" data-i18n="contact.formSubtitle">Fill in your requirement. Submitting will save your request and open WhatsApp directly with all details pre-filled.</p>
             </div>
 
-            <!-- Submission Confirmation Banner -->
             <div class="form-success-banner" id="form-success-banner" role="alert">
-              <i class="fa-solid fa-circle-check" style="font-size: 1.3rem;"></i>
+              <i class="fa-solid fa-circle-check" style="font-size: 1.3rem;" aria-hidden="true"></i>
               <div id="form-success-text" data-i18n="contact.successMsg">
                 Thank you! Your enquiry has been recorded. Redirecting to WhatsApp with your details...
               </div>
             </div>
 
             <form id="enquiry-form" novalidate>
-              <!-- Name Field -->
               <div class="form-group">
                 <label for="client-name" class="form-label">
                   <span data-i18n="contact.fieldName">Full Name</span> <span>*</span>
@@ -553,7 +547,6 @@
                 <div class="form-error" id="name-error">Please enter your full name (at least 2 letters).</div>
               </div>
 
-              <!-- Phone Field (Indian 10-digit validation) -->
               <div class="form-group">
                 <label for="client-phone" class="form-label">
                   <span data-i18n="contact.fieldPhone">Mobile Number (10 Digits)</span> <span>*</span>
@@ -562,7 +555,6 @@
                 <div class="form-error" id="phone-error">Please enter a valid 10-digit Indian mobile number (starting with 6, 7, 8, or 9).</div>
               </div>
 
-              <!-- Email Field (Optional) -->
               <div class="form-group">
                 <label for="client-email" class="form-label">
                   <span data-i18n="contact.fieldEmail">Email Address (Optional)</span>
@@ -571,7 +563,6 @@
                 <div class="form-error" id="email-error">Please enter a valid email address.</div>
               </div>
 
-              <!-- Service Dropdown (Auto-selected by Service Cards) -->
               <div class="form-group">
                 <label for="client-service" class="form-label">
                   <span data-i18n="contact.fieldService">Select Service Required</span> <span>*</span>
@@ -589,7 +580,6 @@
                 <div class="form-error" id="service-error">Please select a service from the list.</div>
               </div>
 
-              <!-- Message Field -->
               <div class="form-group">
                 <label for="client-message" class="form-label">
                   <span data-i18n="contact.fieldMessage">Project Details / Message</span> <span>*</span>
@@ -598,9 +588,8 @@
                 <div class="form-error" id="message-error">Please provide a brief description of your requirement.</div>
               </div>
 
-              <!-- Submit Button -->
               <button type="submit" class="btn btn-primary btn-block btn-lg" id="submit-form-btn">
-                <i class="fa-brands fa-whatsapp"></i>
+                <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
                 <span data-i18n="contact.btnSubmit">Submit &amp; Open WhatsApp Inquiry</span>
               </button>
 
@@ -624,41 +613,38 @@
     <div class="container">
       <div class="footer-grid">
         
-        <!-- Brand Summary -->
         <div class="footer-col">
           <div class="brand">
             <div class="brand-badge">
-              <i class="fa-solid fa-bolt-lightning"></i>
+              <span>A1</span>
             </div>
             <div class="brand-text">
-              <span class="brand-title">A1 <span>ELECTRICAL</span></span>
-              <span class="brand-subtitle">&amp; SECURITY // MUMBAI</span>
+              <span class="brand-title" style="color:#ffffff;">Electrical &amp; Security</span>
+              <span class="brand-subtitle" style="color:#9fb0c3;">Malvani, Malad (W), Mumbai</span>
             </div>
           </div>
           <p class="footer-brand-desc" data-i18n="footer.tagline">
             Premier CCTV Camera Installation, Concealed Wiring &amp; Precision Electrical Services in Malad (West), Mumbai.
           </p>
           <div style="display:flex; gap:0.75rem;">
-            <a href="tel:8767964993" class="btn btn-outline btn-sm" aria-label="Direct Phone"><i class="fa-solid fa-phone"></i></a>
-            <a href="https://wa.me/917506191312" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
-            <a href="https://www.google.com/maps/search/?api=1&query=Gate+No.+05+Malvani+Malad+West+Mumbai" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" aria-label="Location Map"><i class="fa-solid fa-map-pin"></i></a>
+            <a href="tel:8767964993" class="btn btn-outline btn-sm" aria-label="Direct Phone"><i class="fa-solid fa-phone" aria-hidden="true"></i></a>
+            <a href="https://wa.me/917506191312" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>
+            <a href="https://www.google.com/maps/search/?api=1&query=Gate+No.+05+Malvani+Malad+West+Mumbai" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" aria-label="Location Map"><i class="fa-solid fa-map-pin" aria-hidden="true"></i></a>
           </div>
         </div>
 
-        <!-- Quick Links -->
         <div class="footer-col">
           <h4 data-i18n="footer.quickLinks">Quick Navigation</h4>
           <ul class="footer-links">
-            <li><a href="#home" class="footer-link"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Home</a></li>
-            <li><a href="#about" class="footer-link"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> About Us</a></li>
-            <li><a href="#services" class="footer-link"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Our Services</a></li>
-            <li><a href="#projects" class="footer-link"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Recent Projects</a></li>
-            <li><a href="#why-us" class="footer-link"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Why Choose Us</a></li>
-            <li><a href="#contact" class="footer-link"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Contact Us</a></li>
+            <li><a href="#home" class="footer-link"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;" aria-hidden="true"></i> <span data-i18n="nav.home">Home</span></a></li>
+            <li><a href="#about" class="footer-link"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;" aria-hidden="true"></i> <span data-i18n="nav.about">About Us</span></a></li>
+            <li><a href="#services" class="footer-link"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;" aria-hidden="true"></i> <span data-i18n="nav.services">Our Services</span></a></li>
+            <li><a href="#projects" class="footer-link"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;" aria-hidden="true"></i> <span data-i18n="nav.projects">Recent Projects</span></a></li>
+            <li><a href="#why-us" class="footer-link"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;" aria-hidden="true"></i> <span data-i18n="nav.whyUs">Why Choose Us</span></a></li>
+            <li><a href="#contact" class="footer-link"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;" aria-hidden="true"></i> <span data-i18n="nav.contact">Contact Us</span></a></li>
           </ul>
         </div>
 
-        <!-- Services Links -->
         <div class="footer-col">
           <h4 data-i18n="footer.servicesHeader">Our Core Services</h4>
           <ul class="footer-links">
@@ -671,33 +657,32 @@
           </ul>
         </div>
 
-        <!-- Contact Information -->
         <div class="footer-col">
           <h4 data-i18n="footer.contactHeader">Contact Information</h4>
           <div class="footer-contact-list">
             <div class="footer-contact-item">
-              <i class="fa-solid fa-user-shield"></i>
+              <i class="fa-solid fa-user-shield" aria-hidden="true"></i>
               <div>
                 <strong>Proprietor:</strong>
                 <div>Farooqui Sufiyan</div>
               </div>
             </div>
             <div class="footer-contact-item">
-              <i class="fa-solid fa-phone"></i>
+              <i class="fa-solid fa-phone" aria-hidden="true"></i>
               <div>
                 <strong>Calling:</strong>
-                <a href="tel:8767964993" style="color:var(--color-amber); font-weight:700;">8767964993</a>
+                <a href="tel:8767964993" style="color:#f5a623; font-weight:700;">8767964993</a>
               </div>
             </div>
             <div class="footer-contact-item">
-              <i class="fa-brands fa-whatsapp"></i>
+              <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
               <div>
                 <strong>WhatsApp:</strong>
                 <a href="https://wa.me/917506191312" target="_blank" rel="noopener noreferrer" style="color:#25d366; font-weight:700;">7506191312</a>
               </div>
             </div>
             <div class="footer-contact-item">
-              <i class="fa-solid fa-location-dot"></i>
+              <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
               <div>
                 <strong>Address:</strong>
                 <div>Gate No. 05, Malvani, Malad (West), Mumbai</div>
@@ -708,7 +693,6 @@
 
       </div>
 
-      <!-- Copyright Bottom Bar -->
       <div class="footer-bottom">
         <div>
           &copy; <span id="current-year">2026</span> <strong>A1 Electrical &amp; Security</strong>. <span data-i18n="footer.rights">All rights reserved. Professional CCTV &amp; Electrical Solutions.</span>
@@ -720,25 +704,21 @@
     </div>
   </footer>
 
-  <!-- ========================================================================
-       MOBILE STICKY QUICK ACTION BAR (CALL & WHATSAPP)
-       ======================================================================== -->
+  <!-- Mobile Sticky Bar -->
   <aside class="mobile-sticky-bar" aria-label="Mobile Quick Contact Bar">
-    <a href="tel:8767964993" class="btn btn-primary" aria-label="Call Farooqui Sufiyan">
-      <i class="fa-solid fa-phone-volume"></i>
+    <a href="tel:8767964993" class="btn btn-primary" aria-label="Call 8767964993">
+      <i class="fa-solid fa-phone-volume" aria-hidden="true"></i>
       <span>Call Now</span>
     </a>
     <a href="https://wa.me/917506191312?text=Hello%20Farooqui%20Sufiyan%2C%20I%20am%20inquiring%20about%20your%20services." target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp" aria-label="Chat on WhatsApp">
-      <i class="fa-brands fa-whatsapp"></i>
+      <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
       <span>WhatsApp</span>
     </a>
   </aside>
 
-  <!-- ========================================================================
-       BACK TO TOP BUTTON
-       ======================================================================== -->
+  <!-- Back to Top Button -->
   <button class="back-to-top" id="back-to-top" aria-label="Scroll Back to Top" title="Back to top">
-    <i class="fa-solid fa-arrow-up"></i>
+    <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
   </button>
 
   <!-- Scripts -->

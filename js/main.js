@@ -1,10 +1,9 @@
 /**
- * A1 ELECTRICAL & SECURITY - Master Application Logic
- * Pure Vanilla JavaScript (Zero unnecessary dependencies)
+ * A1 ELECTRICAL & SECURITY - Master Application Logic (Phase 1 Refined)
  * Features:
- * - Theme Switcher (Dark / Light) with system preference detection and localStorage persistence
- * - Sticky Navbar with smooth scrolling and active section highlighting
- * - Mobile drawer navigation
+ * - Bilingual Language Switcher (English <-> Hindi) with instant DOM updates
+ * - Theme Switcher (Dark / Light) with system detection & localStorage memory
+ * - Mobile Drawer Menu & Sticky Nav with smooth scroll & scroll-spy
  * - Dynamic Service Cards rendering & "Get Quote" auto-selection
  * - Dynamic Portfolio Projects rendering with filter tabs
  * - Full-featured Lightbox (Next/Prev, Keyboard shortcuts, Swipe detection)
@@ -17,8 +16,9 @@
 document.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
-  // State
+  // Application State
   const state = {
+    lang: localStorage.getItem('a1_lang') || 'en',
     theme: localStorage.getItem('a1_theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'),
     activeFilter: 'all',
     lightboxIndex: 0,
@@ -39,15 +39,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (themeIcon) {
       if (theme === 'light') {
         themeIcon.className = 'fa-solid fa-moon';
-        themeToggleBtn.setAttribute('title', 'Switch to Dark Mode');
+        themeToggleBtn.setAttribute('title', state.lang === 'hi' ? 'डार्क मोड पर स्विच करें' : 'Switch to Dark Mode');
       } else {
         themeIcon.className = 'fa-solid fa-sun';
-        themeToggleBtn.setAttribute('title', 'Switch to Light Mode');
+        themeToggleBtn.setAttribute('title', state.lang === 'hi' ? 'लाइट मोड पर स्विच करें' : 'Switch to Light Mode');
       }
     }
   }
 
-  // Initial theme application
   applyTheme(state.theme);
 
   if (themeToggleBtn) {
@@ -57,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Listen for system theme changes if user has not explicitly set preference
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
     if (!localStorage.getItem('a1_theme')) {
       applyTheme(e.matches ? 'dark' : 'light');
@@ -65,7 +63,63 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     2. STICKY NAVBAR, SCROLL SPY & MOBILE DRAWER
+     2. BILINGUAL LANGUAGE ENGINE (ENGLISH <-> HINDI)
+     ========================================================================== */
+  const langToggleBtn = document.getElementById('lang-toggle');
+  const langLabel = document.getElementById('lang-label');
+
+  function getNestedTranslation(obj, path) {
+    return path.split('.').reduce((prev, curr) => (prev ? prev[curr] : null), obj);
+  }
+
+  function applyLanguage(lang) {
+    state.lang = lang;
+    localStorage.setItem('a1_lang', lang);
+    document.documentElement.setAttribute('lang', lang);
+
+    const dict = APP_DATA.translations[lang] || APP_DATA.translations.en;
+
+    // Update Language Toggle Button Label
+    if (langLabel) {
+      langLabel.textContent = lang === 'en' ? 'हिन्दी' : 'English';
+      langToggleBtn.setAttribute('title', lang === 'en' ? 'Switch to Hindi' : 'Switch to English');
+    }
+
+    // Update all static data-i18n elements
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+      const key = el.getAttribute('data-i18n');
+      const translation = getNestedTranslation(dict, key);
+      if (translation) {
+        el.textContent = translation;
+      }
+    });
+
+    // Update form placeholders
+    const nameInput = document.getElementById('client-name');
+    const phoneInput = document.getElementById('client-phone');
+    const emailInput = document.getElementById('client-email');
+    const messageInput = document.getElementById('client-message');
+
+    if (nameInput) nameInput.placeholder = dict.contact.placeholderName;
+    if (phoneInput) phoneInput.placeholder = dict.contact.placeholderPhone;
+    if (emailInput) emailInput.placeholder = dict.contact.placeholderEmail;
+    if (messageInput) messageInput.placeholder = dict.contact.placeholderMessage;
+
+    // Re-render dynamic sections with the new language
+    renderServices();
+    renderProjects(state.activeFilter);
+    renderWhyChooseUs();
+  }
+
+  if (langToggleBtn) {
+    langToggleBtn.addEventListener('click', () => {
+      const newLang = state.lang === 'en' ? 'hi' : 'en';
+      applyLanguage(newLang);
+    });
+  }
+
+  /* ==========================================================================
+     3. STICKY NAVBAR, SCROLL SPY & MOBILE DRAWER
      ========================================================================== */
   const header = document.getElementById('header');
   const hamburgerBtn = document.getElementById('hamburger-btn');
@@ -73,25 +127,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const navLinks = document.querySelectorAll('.nav-link');
   const backToTopBtn = document.getElementById('back-to-top');
 
-  // Sticky header & Back to top on scroll
   window.addEventListener('scroll', () => {
     const scrollPos = window.scrollY;
 
-    // Header background elevate
     if (scrollPos > 40) {
       header.classList.add('scrolled');
     } else {
       header.classList.remove('scrolled');
     }
 
-    // Back to top visibility
     if (scrollPos > 400) {
       backToTopBtn.classList.add('visible');
     } else {
       backToTopBtn.classList.remove('visible');
     }
 
-    // Scroll spy for active link
+    // Scroll spy
     const sections = document.querySelectorAll('section[id]');
     sections.forEach((section) => {
       const top = section.offsetTop - 120;
@@ -109,14 +160,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, { passive: true });
 
-  // Back to top click
   if (backToTopBtn) {
     backToTopBtn.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 
-  // Mobile Hamburger Toggle
   if (hamburgerBtn && navMenu) {
     hamburgerBtn.addEventListener('click', () => {
       const isOpen = navMenu.classList.toggle('open');
@@ -124,7 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
       hamburgerBtn.setAttribute('aria-expanded', isOpen);
     });
 
-    // Close menu when clicking any nav link
     navLinks.forEach((link) => {
       link.addEventListener('click', () => {
         navMenu.classList.remove('open');
@@ -133,7 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Close menu on click outside
     document.addEventListener('click', (e) => {
       if (!navMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
         navMenu.classList.remove('open');
@@ -144,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     3. SURVEILLANCE HUD LIVE CLOCK
+     4. SURVEILLANCE HUD LIVE CLOCK
      ========================================================================== */
   const hudClock = document.getElementById('hud-clock');
   function updateHudClock() {
@@ -159,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(updateHudClock, 1000);
 
   /* ==========================================================================
-     4. RENDER SERVICES & "GET QUOTE" AUTO-ROUTING
+     5. RENDER SERVICES & "GET QUOTE" AUTO-ROUTING
      ========================================================================== */
   const servicesContainer = document.getElementById('services-container');
   const serviceDropdown = document.getElementById('client-service');
@@ -167,12 +214,18 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderServices() {
     if (!servicesContainer) return;
     servicesContainer.innerHTML = '';
+    const isHi = state.lang === 'hi';
+    const btnQuoteText = isHi ? 'कोटेशन लें' : 'Get Quote';
 
     APP_DATA.services.forEach((service) => {
       const card = document.createElement('div');
       card.className = 'service-card reveal-init';
 
-      const featuresHtml = service.features
+      const title = isHi ? service.titleHi : service.titleEn;
+      const desc = isHi ? service.descHi : service.descEn;
+      const features = isHi ? service.featuresHi : service.featuresEn;
+
+      const featuresHtml = features
         .map(feat => `
           <div class="service-feature-item">
             <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
@@ -184,15 +237,15 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="service-icon-wrap" aria-hidden="true">
           <i class="${service.icon}"></i>
         </div>
-        <h3 class="service-title">${service.title}</h3>
-        <p class="service-desc">${service.shortDesc}</p>
+        <h3 class="service-title">${title}</h3>
+        <p class="service-desc">${desc}</p>
         <div class="service-features">
           ${featuresHtml}
         </div>
         <div class="service-cta">
-          <button class="btn btn-primary btn-block get-quote-btn" data-service-title="${service.title}">
+          <button class="btn btn-primary btn-block get-quote-btn" data-service-id="${service.id}" data-service-title="${service.titleEn}">
             <i class="fa-solid fa-file-invoice" aria-hidden="true"></i>
-            <span>Get Quote</span>
+            <span>${btnQuoteText}</span>
           </button>
         </div>
       `;
@@ -200,22 +253,22 @@ document.addEventListener('DOMContentLoaded', () => {
       servicesContainer.appendChild(card);
     });
 
-    // Attach click listeners to "Get Quote" buttons
     document.querySelectorAll('.get-quote-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
-        const serviceTitle = e.currentTarget.getAttribute('data-service-title');
-        autoSelectServiceAndScroll(serviceTitle);
+        const serviceTitleEn = e.currentTarget.getAttribute('data-service-title');
+        autoSelectServiceAndScroll(serviceTitleEn);
       });
     });
+
+    observeReveals();
   }
 
-  function autoSelectServiceAndScroll(serviceTitle) {
+  function autoSelectServiceAndScroll(serviceTitleEn) {
     if (!serviceDropdown) return;
 
-    // Find matching option or set exact value
     let found = false;
     for (let i = 0; i < serviceDropdown.options.length; i++) {
-      if (serviceDropdown.options[i].value === serviceTitle) {
+      if (serviceDropdown.options[i].value === serviceTitleEn) {
         serviceDropdown.selectedIndex = i;
         found = true;
         break;
@@ -223,11 +276,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (!found) {
-      // Fallback
-      serviceDropdown.value = serviceTitle;
+      serviceDropdown.value = serviceTitleEn;
     }
 
-    // Highlight form dropdown visually
     serviceDropdown.classList.remove('is-invalid');
     serviceDropdown.focus();
     serviceDropdown.style.boxShadow = '0 0 0 4px rgba(245, 166, 35, 0.4)';
@@ -235,7 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
       serviceDropdown.style.boxShadow = '';
     }, 2000);
 
-    // Smooth scroll to enquiry form
     const contactSection = document.getElementById('contact');
     if (contactSection) {
       contactSection.scrollIntoView({ behavior: 'smooth' });
@@ -243,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     5. RENDER PROJECTS & LIGHTBOX IMPLEMENTATION
+     6. RENDER PROJECTS & LIGHTBOX IMPLEMENTATION
      ========================================================================== */
   const projectsContainer = document.getElementById('projects-container');
   const filterBtns = document.querySelectorAll('.filter-btn');
@@ -251,6 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderProjects(filter = 'all') {
     if (!projectsContainer) return;
     projectsContainer.innerHTML = '';
+    const isHi = state.lang === 'hi';
 
     state.filteredProjects = filter === 'all'
       ? APP_DATA.projects
@@ -261,11 +312,17 @@ document.addEventListener('DOMContentLoaded', () => {
       card.className = 'project-card reveal-init';
       card.setAttribute('role', 'button');
       card.setAttribute('tabindex', '0');
-      card.setAttribute('aria-label', `View details for ${project.title}`);
+
+      const title = isHi ? project.titleHi : project.titleEn;
+      const cat = isHi ? project.categoryLabelHi : project.categoryLabelEn;
+      const loc = isHi ? project.locationHi : project.locationEn;
+      const desc = isHi ? project.descHi : project.descEn;
+
+      card.setAttribute('aria-label', `View details for ${title}`);
 
       card.innerHTML = `
         <div class="project-thumb">
-          <img src="${project.image}" alt="${project.title}" loading="lazy">
+          <img src="${project.image}" alt="${title}" loading="lazy">
           <div class="project-overlay" aria-hidden="true">
             <div class="project-view-icon">
               <i class="fa-solid fa-expand"></i>
@@ -274,15 +331,14 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="project-info">
           <div class="project-meta">
-            <span class="project-cat">${project.categoryLabel}</span>
-            <span class="project-loc"><i class="fa-solid fa-location-dot"></i> ${project.location}</span>
+            <span class="project-cat">${cat}</span>
+            <span class="project-loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> ${loc}</span>
           </div>
-          <h3 class="project-title">${project.title}</h3>
-          <p class="project-desc-excerpt">${project.description}</p>
+          <h3 class="project-title">${title}</h3>
+          <p class="project-desc-excerpt">${desc}</p>
         </div>
       `;
 
-      // Open lightbox on click or Enter key
       card.addEventListener('click', () => openLightbox(idx));
       card.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -294,11 +350,9 @@ document.addEventListener('DOMContentLoaded', () => {
       projectsContainer.appendChild(card);
     });
 
-    // Re-trigger scroll reveal for newly added cards
     observeReveals();
   }
 
-  // Filter tab interactions
   filterBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       filterBtns.forEach(b => {
@@ -315,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     LIGHTBOX CONTROLS (Next, Prev, Keyboard & Swipe)
+     LIGHTBOX CONTROLS
      ========================================================================== */
   const lightbox = document.getElementById('project-lightbox');
   const lightboxImg = document.getElementById('lightbox-img');
@@ -346,12 +400,17 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateLightboxContent() {
     const project = state.filteredProjects[state.lightboxIndex];
     if (!project) return;
+    const isHi = state.lang === 'hi';
+
+    const title = isHi ? project.titleHi : project.titleEn;
+    const loc = isHi ? project.locationHi : project.locationEn;
+    const desc = isHi ? project.descHi : project.descEn;
 
     lightboxImg.src = project.image;
-    lightboxImg.alt = project.title;
-    lightboxTitle.textContent = project.title;
-    lightboxLocation.innerHTML = `<i class="fa-solid fa-location-dot"></i> <span>${project.location}</span>`;
-    lightboxDesc.textContent = project.description;
+    lightboxImg.alt = title;
+    lightboxTitle.textContent = title;
+    lightboxLocation.innerHTML = `<i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span>${loc}</span>`;
+    lightboxDesc.textContent = desc;
   }
 
   function nextLightbox() {
@@ -370,7 +429,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (lightboxNext) lightboxNext.addEventListener('click', nextLightbox);
   if (lightboxPrev) lightboxPrev.addEventListener('click', prevLightbox);
 
-  // Close when clicking lightbox backdrop
   if (lightbox) {
     lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox) {
@@ -379,7 +437,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Keyboard navigation for Lightbox
   document.addEventListener('keydown', (e) => {
     if (!lightbox || !lightbox.classList.contains('active')) return;
     if (e.key === 'Escape') closeLightbox();
@@ -387,7 +444,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'ArrowLeft') prevLightbox();
   });
 
-  // Touch swipe support for mobile lightbox
   let touchStartX = 0;
   let touchEndX = 0;
 
@@ -405,14 +461,14 @@ document.addEventListener('DOMContentLoaded', () => {
   function handleSwipe() {
     const swipeThreshold = 45;
     if (touchEndX + swipeThreshold < touchStartX) {
-      nextLightbox(); // Swiped left -> show next
+      nextLightbox();
     } else if (touchEndX > touchStartX + swipeThreshold) {
-      prevLightbox(); // Swiped right -> show prev
+      prevLightbox();
     }
   }
 
   /* ==========================================================================
-     6. RENDER WHY CHOOSE US (REAL VALUE PROPOSITIONS)
+     7. RENDER WHY CHOOSE US
      ========================================================================== */
   const whyGridContainer = document.getElementById('why-grid-container');
 
@@ -427,8 +483,9 @@ document.addEventListener('DOMContentLoaded', () => {
       'fa-solid fa-clock-rotate-left'
     ];
 
+    const currentReasons = APP_DATA.translations[state.lang].whyUs.reasons;
     whyGridContainer.innerHTML = '';
-    APP_DATA.translations.en.whyUs.reasons.forEach((reason, i) => {
+    currentReasons.forEach((reason, i) => {
       const card = document.createElement('div');
       card.className = 'why-card reveal-init';
       card.innerHTML = `
@@ -440,10 +497,12 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       whyGridContainer.appendChild(card);
     });
+
+    observeReveals();
   }
 
   /* ==========================================================================
-     7. ENQUIRY FORM VALIDATION, LOCALSTORAGE & WHATSAPP PIPELINE
+     8. ENQUIRY FORM VALIDATION, LOCALSTORAGE & WHATSAPP PIPELINE
      ========================================================================== */
   const enquiryForm = document.getElementById('enquiry-form');
   const nameInput = document.getElementById('client-name');
@@ -452,10 +511,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const messageInput = document.getElementById('client-message');
   const successBanner = document.getElementById('form-success-banner');
 
-  // Input sanitizer & phone formatter (Indian 10-digit mobile)
   if (phoneInput) {
     phoneInput.addEventListener('input', (e) => {
-      // Remove non-digit characters
       e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
       validatePhone(false);
     });
@@ -470,7 +527,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function validatePhone(showError = true) {
     const val = phoneInput.value.trim();
-    // Indian mobile numbers start with 6, 7, 8, or 9 and have exactly 10 digits
     const phoneRegex = /^[6-9]\d{9}$/;
     const isValid = phoneRegex.test(val);
     if (showError || val.length === 10) {
@@ -482,7 +538,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function validateEmail() {
     const val = emailInput.value.trim();
     if (!val) {
-      // Optional field
       emailInput.classList.remove('is-invalid');
       return true;
     }
@@ -512,7 +567,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Real-time blur validation
   if (nameInput) nameInput.addEventListener('blur', validateName);
   if (phoneInput) phoneInput.addEventListener('blur', () => validatePhone(true));
   if (emailInput) emailInput.addEventListener('blur', validateEmail);
@@ -530,13 +584,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const isMessageValid = validateMessage();
 
       if (!isNameValid || !isPhoneValid || !isEmailValid || !isServiceValid || !isMessageValid) {
-        // Find first invalid input and focus
         const firstInvalid = enquiryForm.querySelector('.is-invalid');
         if (firstInvalid) firstInvalid.focus();
         return;
       }
 
-      // Collect data
       const leadData = {
         name: nameInput.value.trim(),
         phone: phoneInput.value.trim(),
@@ -546,22 +598,19 @@ document.addEventListener('DOMContentLoaded', () => {
         timestamp: new Date().toISOString()
       };
 
-      // 1. Save lead to localStorage
       try {
         const storedLeads = JSON.parse(localStorage.getItem('a1_leads') || '[]');
         storedLeads.push(leadData);
         localStorage.setItem('a1_leads', JSON.stringify(storedLeads));
       } catch (err) {
-        console.warn('LocalStorage error:', err);
+        console.warn('LocalStorage save error:', err);
       }
 
-      // 2. Display success message
       if (successBanner) {
         successBanner.classList.add('active');
         successBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
 
-      // 3. Construct WhatsApp Pre-filled message
       const whatsappNumber = '917506191312';
       const formattedText = `*NEW ENQUIRY - A1 ELECTRICAL & SECURITY*%0A%0A` +
         `*Name:* ${encodeURIComponent(leadData.name)}%0A` +
@@ -569,14 +618,12 @@ document.addEventListener('DOMContentLoaded', () => {
         `*Email:* ${encodeURIComponent(leadData.email)}%0A` +
         `*Service Required:* ${encodeURIComponent(leadData.service)}%0A` +
         `*Details:* ${encodeURIComponent(leadData.message)}%0A%0A` +
-        `_Sent via A1 Electrical & Security Online Portal_`;
+        `_Sent via A1 Electrical & Security Website Portal_`;
 
       const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${formattedText}`;
 
-      // Reset form fields
       enquiryForm.reset();
 
-      // 4. Open WhatsApp in new tab after short delay
       setTimeout(() => {
         window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
       }, 1000);
@@ -584,7 +631,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     8. INTERSECTION OBSERVER SCROLL REVEALS
+     9. SCROLL REVEAL OBSERVER
      ========================================================================== */
   function observeReveals() {
     const revealElements = document.querySelectorAll('.reveal-init:not(.reveal-observed)');
@@ -612,15 +659,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Update Copyright Year
   const yearElem = document.getElementById('current-year');
   if (yearElem) {
     yearElem.textContent = new Date().getFullYear();
   }
 
-  // Initialize all components
-  renderServices();
-  renderProjects('all');
-  renderWhyChooseUs();
-  observeReveals();
+  // Initialize Language and Components
+  applyLanguage(state.lang);
 });
