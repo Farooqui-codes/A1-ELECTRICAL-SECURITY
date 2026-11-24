@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#071A2B"/>
+      <stop offset="50%" stop-color="#0B2642"/>
+      <stop offset="100%" stop-color="#05121F"/>
+    </linearGradient>
+    <linearGradient id="cyanGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#168BCE"/>
+      <stop offset="100%" stop-color="#00E5FF"/>
+    </linearGradient>
+    <radialGradient id="lensReflect" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.8"/>
+      <stop offset="40%" stop-color="#0284c7" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#071a2b" stop-opacity="0.95"/>
+    </radialGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <!-- Grid overlay -->
+  <g stroke="#168BCE" stroke-opacity="0.15" stroke-width="1">
+    <line x1="0" y1="100" x2="800" y2="100"/>
+    <line x1="0" y1="200" x2="800" y2="200"/>
+    <line x1="0" y1="300" x2="800" y2="300"/>
+    <line x1="0" y1="400" x2="800" y2="400"/>
+    <line x1="160" y1="0" x2="160" y2="500"/>
+    <line x1="320" y1="0" x2="320" y2="500"/>
+    <line x1="480" y1="0" x2="480" y2="500"/>
+    <line x1="640" y1="0" x2="640" y2="500"/>
+  </g>
+  <!-- Camera Graphic -->
+  <g transform="translate(400, 210)">
+    <!-- Mount Arm -->
+    <path d="M-120,-100 L-40,-40 L-40,-10 L-120,-40 Z" fill="#1E3A5F" stroke="#168BCE" stroke-width="2"/>
+    <circle cx="-120" cy="-70" r="18" fill="#0B2642" stroke="#168BCE" stroke-width="3"/>
+    <!-- Bullet Camera Body -->
+    <rect x="-50" y="-45" width="180" height="90" rx="15" fill="#0E2338" stroke="#168BCE" stroke-width="3"/>
+    <!-- Sunshield -->
+    <path d="M-60,-55 L145,-55 L135,-45 L-55,-45 Z" fill="#168BCE"/>
+    <!-- Lens Housing -->
+    <rect x="130" y="-38" width="22" height="76" rx="4" fill="#081827" stroke="#00E5FF" stroke-width="2"/>
+    <ellipse cx="148" cy="0" rx="14" ry="32" fill="url(#lensReflect)"/>
+    <!-- Infrared LEDs -->
+    <circle cx="120" cy="-24" r="3.5" fill="#EF4444"/>
+    <circle cx="120" cy="24" r="3.5" fill="#EF4444"/>
+    <circle cx="110" cy="-28" r="3" fill="#EF4444"/>
+    <circle cx="110" cy="28" r="3" fill="#EF4444"/>
+    <!-- Active Status Indicator -->
+    <circle cx="60" cy="-28" r="4" fill="#22C55E"/>
+    <!-- Target Crosshairs -->
+    <circle cx="150" cy="0" r="45" fill="none" stroke="#00E5FF" stroke-width="1.5" stroke-dasharray="4,4"/>
+  </g>
+  <!-- HUD Text Elements -->
+  <rect x="40" y="35" width="140" height="32" rx="4" fill="#EF4444" fill-opacity="0.2" stroke="#EF4444" stroke-width="1"/>
+  <circle cx="58" cy="51" r="5" fill="#EF4444"/>
+  <text x="75" y="56" fill="#F87171" font-family="'Segoe UI', Arial, sans-serif" font-weight="700" font-size="13" letter-spacing="2">CAM 01 // LIVE</text>
+  
+  <rect x="40" y="420" width="720" height="48" rx="6" fill="#071A2B" fill-opacity="0.85" stroke="#168BCE" stroke-width="1.5"/>
+  <text x="60" y="450" fill="#FFFFFF" font-family="'Segoe UI', Arial, sans-serif" font-weight="600" font-size="16">COMMERCIAL 4K IP CCTV SYSTEM INSTALLATION</text>
+  <text x="740" y="450" text-anchor="end" fill="#F5A623" font-family="'Segoe UI', Arial, sans-serif" font-weight="700" font-size="13" letter-spacing="1">MALAD WEST, MUMBAI</text>
+</svg>

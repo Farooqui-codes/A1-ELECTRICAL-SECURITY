@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="domeBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081A2A"/>
+      <stop offset="100%" stop-color="#020B13"/>
+    </linearGradient>
+    <radialGradient id="glassSphere" cx="45%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.9"/>
+      <stop offset="35%" stop-color="#0284C7" stop-opacity="0.6"/>
+      <stop offset="70%" stop-color="#071A2B" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#03080F" stop-opacity="0.98"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#domeBg)"/>
+  <!-- Ceiling Tile Grid -->
+  <g stroke="#1E3A5F" stroke-width="1.5">
+    <line x1="0" y1="120" x2="800" y2="120"/>
+    <line x1="200" y1="0" x2="200" y2="120"/>
+    <line x1="400" y1="0" x2="400" y2="120"/>
+    <line x1="600" y1="0" x2="600" y2="120"/>
+  </g>
+  <!-- Dome Camera Base Mount -->
+  <g transform="translate(400, 120)">
+    <ellipse cx="0" cy="0" rx="140" ry="35" fill="#132B45" stroke="#168BCE" stroke-width="3"/>
+    <ellipse cx="0" cy="15" rx="120" ry="25" fill="#0C1F33"/>
+    <!-- Smoked Glass Dome Bubble -->
+    <path d="M-100,15 A100,110 0 0,0 100,15 Z" fill="url(#glassSphere)" stroke="#00E5FF" stroke-width="1.5"/>
+    <!-- Internal PTZ Lens Unit -->
+    <ellipse cx="0" cy="65" rx="35" ry="35" fill="#04090F" stroke="#1E3A5F" stroke-width="2"/>
+    <circle cx="0" cy="65" r="22" fill="#020408"/>
+    <circle cx="-5" cy="60" r="7" fill="#38BDF8" opacity="0.8"/>
+    <!-- Infrared Matrix Ring -->
+    <circle cx="-25" cy="50" r="3" fill="#EF4444"/>
+    <circle cx="25" cy="50" r="3" fill="#EF4444"/>
+    <circle cx="-25" cy="80" r="3" fill="#EF4444"/>
+    <circle cx="25" cy="80" r="3" fill="#EF4444"/>
+  </g>
+  <!-- 360 Field of View Cones -->
+  <polygon points="400,180 150,420 650,420" fill="#168BCE" fill-opacity="0.08" stroke="#00E5FF" stroke-width="1" stroke-dasharray="6,4"/>
+  <!-- Status Badge -->
+  <rect x="40" y="35" width="160" height="32" rx="4" fill="#10B981" fill-opacity="0.15" stroke="#10B981" stroke-width="1"/>
+  <circle cx="58" cy="51" r="5" fill="#10B981"/>
+  <text x="75" y="56" fill="#34D399" font-family="'Segoe UI', Arial, sans-serif" font-weight="700" font-size="13" letter-spacing="1">DOME 360° // ONLINE</text>
+  <!-- Footer Banner -->
+  <rect x="40" y="420" width="720" height="48" rx="6" fill="#071A2B" fill-opacity="0.85" stroke="#168BCE" stroke-width="1.5"/>
+  <text x="60" y="450" fill="#FFFFFF" font-family="'Segoe UI', Arial, sans-serif" font-weight="600" font-size="16">INDOOR HD DOME SURVEILLANCE NETWORK</text>
+  <text x="740" y="450" text-anchor="end" fill="#F5A623" font-family="'Segoe UI', Arial, sans-serif" font-weight="700" font-size="13" letter-spacing="1">RETAIL STORE, MUMBAI</text>
+</svg>

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="maintBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081827"/>
+      <stop offset="100%" stop-color="#030C16"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#maintBg)"/>
+  <!-- Digital Multimeter Diagnostic Equipment Graphic -->
+  <g transform="translate(400, 210)">
+    <!-- Multimeter Body -->
+    <rect x="-110" y="-140" width="220" height="260" rx="20" fill="#F59E0B" stroke="#D97706" stroke-width="4"/>
+    <rect x="-95" y="-125" width="190" height="230" rx="14" fill="#1E293B"/>
+    <!-- Digital LCD Screen -->
+    <rect x="-75" y="-105" width="150" height="65" rx="6" fill="#84CC16" fill-opacity="0.2" stroke="#4ADE80" stroke-width="1.5"/>
+    <text x="0" y="-62" text-anchor="middle" fill="#4ADE80" font-family="monospace" font-size="32" font-weight="900" letter-spacing="2">238.4 V</text>
+    <text x="65" y="-90" text-anchor="end" fill="#86EFAC" font-family="monospace" font-size="11">AC RMS</text>
+    <!-- Rotary Dial -->
+    <circle cx="0" cy="15" r="42" fill="#0F172A" stroke="#475569" stroke-width="2"/>
+    <circle cx="0" cy="15" r="32" fill="#334155"/>
+    <rect x="-3" y="-15" width="6" height="28" fill="#F59E0B" rx="2"/>
+    <!-- Probes Sockets -->
+    <circle cx="-40" cy="80" r="10" fill="#EF4444"/>
+    <circle cx="0" cy="80" r="10" fill="#111827"/>
+    <circle cx="40" cy="80" r="10" fill="#3B82F6"/>
+    <!-- Test Leads Cables -->
+    <path d="M-40,90 Q-80,180 -180,160" fill="none" stroke="#EF4444" stroke-width="5" stroke-linecap="round"/>
+    <path d="M0,90 Q40,190 180,160" fill="none" stroke="#111827" stroke-width="5" stroke-linecap="round"/>
+  </g>
+  <!-- Status Badge -->
+  <rect x="40" y="35" width="170" height="32" rx="4" fill="#059669" fill-opacity="0.15" stroke="#059669" stroke-width="1"/>
+  <circle cx="58" cy="51" r="5" fill="#10B981"/>
+  <text x="75" y="56" fill="#34D399" font-family="'Segoe UI', Arial, sans-serif" font-weight="700" font-size="13" letter-spacing="1">VOLTAGE // STABLE</text>
+  <!-- Footer Banner -->
+  <rect x="40" y="420" width="720" height="48" rx="6" fill="#071A2B" fill-opacity="0.85" stroke="#168BCE" stroke-width="1.5"/>
+  <text x="60" y="450" fill="#FFFFFF" font-family="'Segoe UI', Arial, sans-serif" font-weight="600" font-size="16">ELECTRICAL LOAD BALANCING &amp; EMERGENCY REPAIR</text>
+  <text x="740" y="450" text-anchor="end" fill="#F5A623" font-family="'Segoe UI', Arial, sans-serif" font-weight="700" font-size="13" letter-spacing="1">MALVANI, MALAD WEST</text>
+</svg>
